@@ -25,58 +25,68 @@ class AboutSymbols < Neo::Koan
 
   def test_method_names_become_symbols
     symbols_as_strings = Symbol.all_symbols.map { |x| x.to_s }
-    assert_equal true, symbols_as_strings.include?("test_method_names_become_symbols")
+    assert_equal true, symbols_as_strings.include?('test_method_names_become_symbols')
   end
 
   # THINK ABOUT IT:
   #
   # Why do we convert the list of symbols to strings and then compare
   # against the string value rather than against symbols?
+  #
+  # When we reference a symbol, we create it in the pool of symbols. So, if we had a test like:
+  #
+  #   Symbol.all_symbols.include?(:foo)
+  #
+  # The following things would occur:
+  #
+  # 1. The referenced symbol :foo, if not already added to the symbol scope, would be added
+  # 2. The all_symbols method would be invoked, returning all symbols, including :foo
+  # 3. The include? method would always return true, as the symbol was created in step 1
 
-  in_ruby_version("mri") do
-    RubyConstant = "What is the sound of one hand clapping?"
+  in_ruby_version('mri') do
+    RUBY_CONSTANT = 'What is the sound of one hand clapping?'
     def test_constants_become_symbols
       all_symbols_as_strings = Symbol.all_symbols.map { |x| x.to_s }
 
-      assert_equal __, all_symbols_as_strings.include?(__)
+      assert_equal true, all_symbols_as_strings.include?('RUBY_CONSTANT')
     end
   end
 
   def test_symbols_can_be_made_from_strings
-    string = "catsAndDogs"
-    assert_equal __, string.to_sym
+    string = 'catsAndDogs'
+    assert_equal :catsAndDogs, string.to_sym
   end
 
   def test_symbols_with_spaces_can_be_built
-    symbol = :"cats and dogs"
+    symbol = :'cats and dogs'
 
-    assert_equal __.to_sym, symbol
+    assert_equal 'cats and dogs'.to_sym, symbol
   end
 
   def test_symbols_with_interpolation_can_be_built
-    value = "and"
+    value = 'and'
     symbol = :"cats #{value} dogs"
 
-    assert_equal __.to_sym, symbol
+    assert_equal 'cats and dogs'.to_sym, symbol
   end
 
   def test_to_s_is_called_on_interpolated_symbols
     symbol = :cats
     string = "It is raining #{symbol} and dogs."
 
-    assert_equal __, string
+    assert_equal 'It is raining cats and dogs.', string
   end
 
   def test_symbols_are_not_strings
     symbol = :ruby
-    assert_equal __, symbol.is_a?(String)
-    assert_equal __, symbol.eql?("ruby")
+    assert_equal false, symbol.is_a?(String)
+    assert_equal false, symbol.eql?('ruby')
   end
 
   def test_symbols_do_not_have_string_methods
     symbol = :not_a_string
-    assert_equal __, symbol.respond_to?(:each_char)
-    assert_equal __, symbol.respond_to?(:reverse)
+    assert_equal false, symbol.respond_to?(:each_char)
+    assert_equal false, symbol.respond_to?(:reverse)
   end
 
   # It's important to realize that symbols are not "immutable
@@ -85,13 +95,13 @@ class AboutSymbols < Neo::Koan
 
   def test_symbols_cannot_be_concatenated
     # Exceptions will be pondered further down the path
-    assert_raise(___) do
+    assert_raise(NoMethodError) do
       :cats + :dogs
     end
   end
 
   def test_symbols_can_be_dynamically_created
-    assert_equal __, ("cats" + "dogs").to_sym
+    assert_equal :catsdogs, ('cats' + 'dogs').to_sym
   end
 
   # THINK ABOUT IT:
