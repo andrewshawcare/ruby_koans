@@ -107,4 +107,7 @@ class AboutSymbols < Neo::Koan
   # THINK ABOUT IT:
   #
   # Why is it not a good idea to dynamically create a lot of symbols?
+  #
+  # Symbols will become immutable global objects and will reside in memory until the program exits. As such, it will
+  # be memory-taxing to create lots of symbols if they are not required for the entire duration of the program execution
 end
