@@ -53,7 +53,7 @@ class AboutDiceProject < Neo::Koan
     # likely) that two consecutive rolls are equal.  What would be a
     # better way to test this?
     #
-    # There is no way to guarantee a random roll won't be equal for any finite period of time.
+    # There is no way to guarantee successive random rolls won't be equal for any finite period of time.
   end
 
   def test_you_can_roll_different_numbers_of_dice
