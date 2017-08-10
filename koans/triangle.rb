@@ -13,27 +13,23 @@
 # and
 #   about_triangle_project_2.rb
 #
+
+def valid_triangle?(sides)
+  sides.combination(2).map(&:sum).min > sides.max
+end
+
+def type_by_unique_sides(unique_sides)
+  { 1 => :equilateral, 2 => :isosceles, 3 => :scalene }[unique_sides]
+end
+
 def triangle(a, b, c)
-  sides_equal = 0
+  sides = [a, b, c]
 
-  [a, b, c]
-    .combination(2)
-    .each do |(first_side, second_side)|
-      if first_side.eql? second_side
-        sides_equal += 1
-      end
-    end
-
-  case sides_equal
-    when 0
-      :scalene
-    when 1
-      :isosceles
-    when 3
-      :equilateral
-    else
-      nil
+  if sides.min <= 0 || (not valid_triangle?(sides))
+    raise TriangleError
   end
+
+  type_by_unique_sides sides.uniq.size
 end
 
 # Error class used in part 2.  No need to change this code.
