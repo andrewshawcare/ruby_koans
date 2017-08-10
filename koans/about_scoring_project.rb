@@ -29,8 +29,40 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
+def score_for_roll(value)
+  case value
+    when 1
+      100
+    when 5
+      50
+    else
+      0
+  end
+end
+
+def score_for_set(value)
+  case value
+    when 1
+      1000
+    else
+      value * 100
+  end
+end
+
+def score_for_frequency(pair)
+  value, frequency = pair
+  set_size = 3
+
+  if frequency >= set_size
+    score_for_set(value) * (frequency / set_size) + score_for_roll(value) * (frequency % set_size)
+  else
+    score_for_roll(value) * frequency
+  end
+end
+
 def score(dice)
-  # You need to write this method
+  frequencies = dice.reduce(Hash.new(0)) { |frequencies, n| frequencies.merge({ n => frequencies[n] += 1 }) }
+  frequencies.map(&method(:score_for_frequency)).sum
 end
 
 class AboutScoringProject < Neo::Koan
