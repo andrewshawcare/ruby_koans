@@ -15,10 +15,29 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 class Proxy
   def initialize(target_object)
     @object = target_object
-    # ADD MORE CODE HERE
+    @message_invocations = Hash.new(0)
   end
 
-  # WRITE CODE HERE
+  def messages
+    @message_invocations.keys
+  end
+
+  def number_of_times_called(method_name)
+    @message_invocations[method_name]
+  end
+
+  def called?(method_name)
+    @message_invocations.keys.include?(method_name)
+  end
+
+  def method_missing(method_name, *args, &block)
+    if @object.respond_to?(method_name)
+      @message_invocations[method_name] += 1
+      @object.send(method_name, *args, &block)
+    else
+      super(method_name, *args, &block)
+    end
+  end
 end
 
 # The proxy object should pass the following Koan:
@@ -56,6 +75,7 @@ class AboutProxyObjectProject < Neo::Koan
     tv = Proxy.new(Television.new)
 
     assert_raise(NoMethodError) do
+      # noinspection RubyResolve
       tv.no_such_method
     end
   end
